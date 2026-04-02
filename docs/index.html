@@ -272,7 +272,6 @@
                     <p class="question-text">${formattedQuestion}</p>
                 </div>
                 ${optionsHtml}
-                <div class="mt-4"><button class="gemini-button" onclick="showExplanation()">✨関連用語を解説</button></div>
                 <div class="navigation-buttons">
                     <button id="prev-button" class="nav-button bg-gray-300 hover:bg-gray-400 text-gray-800" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>前の問題へ</button>
                     <button id="next-button" class="nav-button primary" onclick="nextQuestion()" ${userAnswers[currentQuestionIndex] === null ? 'disabled' : ''}>${currentQuestionIndex === quizData.length - 1 ? '結果を見る' : '次の問題へ'}</button>
@@ -312,7 +311,10 @@
                 </div>
                 <button class="nav-button primary mr-2" onclick="submitResultsToGoogleSheet()">結果をスプレッドシートに記録</button>
                 <button class="nav-button bg-gray-500 hover:bg-gray-600 text-white" onclick="restartQuiz()">もう一度挑戦する</button>
-                <div id="submission-status"></div>`;
+                <div id="submission-status"></div>
+                <div id="review-button-area" class="hidden mt-4">
+                    <button class="gemini-button text-lg px-6 py-3" onclick="showReview()">解説を見る</button>
+                </div>`;
         }
 
         window.restartQuiz = function() {
@@ -365,14 +367,31 @@
 
             submissionStatusEl.textContent = '結果を送信しました！スプレッドシートをご確認ください。';
             submissionStatusEl.className = 'text-green-600';
+            document.getElementById('review-button-area').classList.remove('hidden');
         }
 
-        window.showExplanation = function() {
-            const currentQuestion = quizData[currentQuestionIndex];
-            const termToExplain = currentQuestion.keywords[0];
-            explanationTermEl.textContent = `「${termToExplain}」について`;
-            explanationContentEl.textContent = currentQuestion.explanation;
-            explanationModalEl.classList.remove('hidden');
+        window.showReview = function() {
+            resultsContentEl.classList.add('hidden');
+            quizContentEl.classList.remove('hidden');
+            let reviewHtml = '<h2 class="results-title mb-6">全問解説</h2>';
+            quizData.forEach((q, index) => {
+                const isCorrect = userAnswers[index] === q.answer;
+                const userAnswer = userAnswers[index] !== null ? q.options[userAnswers[index]] : '未回答';
+                const correctAnswer = q.options[q.answer];
+                reviewHtml += `
+                    <div class="mb-6 p-4 border rounded-lg ${isCorrect ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'}">
+                        <p class="text-sm text-gray-500 mb-1">${q.chapter}</p>
+                        <h3 class="font-semibold mb-2">問題 ${index + 1}：${formatQuestionText(q.question)}</h3>
+                        <p class="mb-1">あなたの回答：<span class="${isCorrect ? 'text-green-700 font-bold' : 'text-red-700 font-bold'}">${userAnswer} ${isCorrect ? '○' : '×'}</span></p>
+                        ${!isCorrect ? `<p class="mb-2">正解：<span class="text-green-700 font-bold">${correctAnswer}</span></p>` : ''}
+                        <details class="mt-2">
+                            <summary class="cursor-pointer text-blue-600 hover:text-blue-800 font-medium">解説を見る</summary>
+                            <div class="mt-2 p-3 bg-white rounded border border-gray-200 whitespace-pre-wrap text-sm">${q.explanation}</div>
+                        </details>
+                    </div>`;
+            });
+            reviewHtml += `<div class="text-center mt-6"><button class="nav-button bg-gray-500 hover:bg-gray-600 text-white" onclick="restartQuiz()">もう一度挑戦する</button></div>`;
+            quizContentEl.innerHTML = reviewHtml;
         }
 
         window.closeExplanationModal = function() {
