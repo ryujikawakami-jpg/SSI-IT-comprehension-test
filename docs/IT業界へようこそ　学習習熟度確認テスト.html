@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT業界基礎知識 理解度テスト（1～4章・スプレッドシート記録機能付き）</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .question-header {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .question-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+        .question-text {
+            font-size: 1.125rem;
+            margin-top: 0.5rem;
+            color: #374151;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .option-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            text-align: left;
+            font-size: 1rem;
+            background-color: white;
+            color: #1f2937;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .option-button:hover {
+            background-color: #f9fafb;
+            border-color: #9ca3af;
+        }
+        .option-button.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+            color: #047857;
+        }
+        .option-button.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+        .option-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .navigation-buttons {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .nav-button.primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .nav-button.primary:hover {
+            background-color: #2563eb;
+        }
+        .nav-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .results-container {
+            text-align: center;
+        }
+        .results-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        .results-score {
+            font-size: 1.5rem;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+        .username-input {
+            margin-bottom: 1rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            width: 100%;
+            max-width: 300px;
+        }
+        #submission-status {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            min-height: 1.25rem;
+        }
+        .gemini-button {
+            background-color: #fbbf24;
+            color: #78350f;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .gemini-button:hover {
+            background-color: #f59e0b;
+        }
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #9ca3af;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .modal-close-button:hover {
+            color: #6b7280;
+        }
+        #explanation-content {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div id="quiz-content"></div>
+        <div id="results-content" class="results-container hidden"></div>
+    </div>
+    <div id="explanation-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close-button" onclick="closeExplanationModal()">&times;</button>
+            <h3 class="text-xl font-semibold mb-2">✨ 関連用語の解説</h3>
+            <div id="explanation-term" class="font-medium text-lg mb-2"></div>
+            <div id="explanation-loading" class="loading-spinner hidden"></div>
+            <div id="explanation-content">ここに解説が表示されます。</div>
+        </div>
+    </div>
+    <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7EWD9o9eYNs7SZsXl17tJDKxXgGOqcLrMXSZ2r--ow6bsXUXylOfbh-jp-g2GzvqL3w/exec'; // 後の手順で発行する、ご自身のGoogle Apps ScriptのウェブアプリURLに置き換えてください
+
+        const quizData = [
+            { chapter: "第1章 業界の全体像とネットビジネス企業", question: "世界的に影響力の強いアメリカのIT企業群を表す「GAFAM」に、講義では**含まれていない**企業はどれですか？", options: ["Google", "Apple", "Twitter (現 X)", "Microsoft"], answer: 2, keywords: ["GAFAM", "IT企業"] },
+            { chapter: "第1章 業界の全体像とネットビジネス企業", question: "クラウドサービスの主要な3つのサービスモデルとして、講義では**適切でない**ものはどれですか？", options: ["SaaS (Software as a Service)", "PaaS (Platform as a Service)", "DaaS (Desktop as a Service)", "IaaS (Infrastructure as a Service)"], answer: 2, keywords: ["クラウドサービス", "SaaS", "PaaS", "IaaS"] },
+            { chapter: "第1章 業界の全体像とネットビジネス企業", question: "システムインテグレーター（SIer）の主な分類として、講義では**含まれていない**ものはどれですか？", options: ["メーカー系", "ユーザー系", "コンサル系", "独立系"], answer: 2, keywords: ["システムインテグレーター", "SIer"] },
+            { chapter: "第1章 業界の全体像とネットビジネス企業", question: "特定の企業が、個人に対して自社製品に関する知識や技術が一定水準にあることを認定するための資格の種類を何と呼びますか？", options: ["国家資格", "公的資格", "ベンダー資格", "学術資格"], answer: 2, keywords: ["ベンダー資格", "国家資格"] },
+            { chapter: "第1章 業界の全体像とネットビジネス企業", question: "IT業界における「ベンダー」という用語の説明として、講義では最も適切なものはどれですか？", options: ["IT製品やサービスを購入する企業のこと", "IT製品やサービスを開発・販売する企業のこと", "ITシステムの運用保守を専門に行う技術者のこと", "IT業界の動向を調査・分析するコンサルタントのこと"], answer: 1, keywords: ["ベンダー", "IT業界"] },
+            { chapter: "第2章 ビジネスシーンで使われるIT用語、ITエンジニアの種類と職種", question: "プロジェクトの各作業工程を細かく分割して構造化し、管理するために作成される図表を何と呼びますか？", options: ["RFP (Request For Proposal)", "WBS (Work Breakdown Structure)", "KPI (Key Performance Indicator)", "SCM (Supply Chain Management)"], answer: 1, keywords: ["WBS", "プロジェクト管理", "RFP", "KPI", "SCM"] },
+            { chapter: "第2章 ビジネスシーンで使われるIT用語、ITエンジニアの種類と職種", question: "ソフトウェア開発手法の一つで、最初に全ての仕様を決定し、滝の水が流れ落ちるように各工程を順番に進めていく手法を何と呼びますか？", options: ["アジャイル開発", "ウォーターフォール開発", "プロトタイプ開発", "スパイラル開発"], answer: 1, keywords: ["ウォーターフォール開発", "アジャイル開発", "ソフトウェア開発手法"] },
+            { chapter: "第2章 ビジネスシーンで使われるIT用語、ITエンジニアの種類と職種", question: "ウェブサイトやアプリケーションにおいて、ユーザーが直接目にし、操作する部分（ユーザーインターフェース）の開発を担当するエンジニアを何と呼びますか？", options: ["バックエンドエンジニア", "フロントエンドエンジニア", "インフラエンジニア", "データベースエンジニア"], answer: 1, keywords: ["フロントエンドエンジニア", "バックエンドエンジニア", "ユーザーインターフェース"] },
+            { chapter: "第2章 ビジネスシーンで使われるIT用語、ITエンジニアの種類と職種", question: "企業が抱える経営上・業務上の課題を、ITを活用して解決へと導く専門職を何と呼びますか？", options: ["プログラマー", "システムエンジニア", "ITコンサルタント", "プロジェクトマネージャー"], answer: 2, keywords: ["ITコンサルタント", "システムエンジニア"] },
+            { chapter: "第2章 ビジネスシーンで使われるIT用語、ITエンジニアの種類と職種", question: "「RPA」の正式名称とその説明として、講義では正しいものはどれですか？", options: ["Real-time Process Automation：リアルタイムで業務プロセスを自動化する技術。", "Robotic Process Automation：ソフトウェアロボットが主に定型的なPC操作を自動化する技術。", "Remote Program Access：遠隔地にあるプログラムにアクセスするための技術。", "Rapid Project Arrangement：プロジェクトを迅速に計画・調整するための手法。"], answer: 1, keywords: ["RPA", "Robotic Process Automation"] },
+            { chapter: "第3章 ベンダーの主要なサービスを説明できる", question: "クラウドコンピューティングが持つ基本的な特徴として、講義では**適切でない**ものはどれですか？", options: ["オンデマンド・セルフサービス（利用者が必要な時に必要なだけ利用できる）", "物理的なサーバーの戸別所有（利用者がサーバー機器を直接所有・管理する）", "幅広いネットワークアクセス（様々な端末からネットワーク経由で利用できる）", "リソースの共有（複数の利用者でコンピューティングリソースを共有する）"], answer: 1, keywords: ["クラウドコンピューティング", "オンデマンド"] },
+            { chapter: "第3章 ベンダーの主要なサービスを説明できる", question: "Javaなどのプログラミング言語において、特定の機能（例：ログイン認証、ウェブ機能）を開発しやすくするために提供される、骨組みとなるソフトウェアのことを一般的に何と呼びますか？", options: ["ライブラリ", "API", "フレームワーク", "モジュール"], answer: 2, keywords: ["フレームワーク", "ライブラリ", "API"] },
+            { chapter: "第3章 ベンダーの主要なサービスを説明できる", question: "Salesforce社が提供している、クラウド型の営業支援システム（SFA）および顧客関係管理システム（CRM）の代表的な製品名は、講義では何と紹介されていますか？", options: ["Dynamics 365 Sales", "Sales Cloud", "SAP S/4HANA Sales", "Oracle Siebel CRM"], answer: 1, keywords: ["Sales Cloud", "Salesforce", "CRM", "SFA"] },
+            { chapter: "第3章 ベンダーの主要なサービスを説明できる", question: "世界最大のコンピュータネットワーク機器開発会社であり、ルーターやスイッチなどの製品で高いシェアを持つ企業として、講義では紹介されているのはどれですか？", options: ["HP (Hewlett-Packard)", "Dell Technologies", "Cisco Systems", "IBM"], answer: 2, keywords: ["Cisco Systems", "ルーター", "スイッチ"] },
+            { chapter: "第3章 ベンダーの主要なサービスを説明できる", question: "クラウドサービスの提供形態の一つで、利用者がインターネット経由でアプリケーションソフトウェアを利用できるサービスを何と呼びますか？", options: ["IaaS (Infrastructure as a Service)", "PaaS (Platform as a Service)", "SaaS (Software as a Service)", "DaaS (Data as a Service)"], answer: 2, keywords: ["SaaS", "クラウドサービス"] },
+            { chapter: "第4章 ITビジネスで覚えておくべき関連法規", question: "企業経営の最高責任者であるCEO (Chief Executive Officer) に対し、情報システム戦略を統括し、その実行に関する全責任を負う役職の略称は何ですか？", options: ["COO (Chief Operating Officer)", "CFO (Chief Financial Officer)", "CTO (Chief Technology Officer)", "CIO (Chief Information Officer)"], answer: 3, keywords: ["CIO", "CEO", "情報システム戦略"] },
+            { chapter: "第4章 ITビジネスで覚えておくべき関連法規", question: "発明、考案、意匠、商標、著作物など、人間の知的活動によって生み出された成果物に対する権利の総称を何と呼びますか？", options: ["独占禁止法", "知的財産権", "製造物責任法", "個人情報保護法"], answer: 1, keywords: ["知的財産権", "特許権", "著作権"] },
+            { chapter: "第4章 ITビジネスで覚えておくべき関連法規", question: "製造物の欠陥によって人の生命、身体又は財産に損害が生じた場合に、製造業者等が負うべき損害賠償責任について定めた法律を一般的に何と呼びますか？", options: ["著作権法", "PL法（製造物責任法）", "不正競争防止法", "下請法"], answer: 1, keywords: ["PL法", "製造物責任法"] },
+            { chapter: "第4章 ITビジネスで覚えておくべき関連法規", question: "他人のIDやパスワードを不正に使用したり、セキュリティホールを悪用したりして、アクセス権限のないコンピュータシステムに侵入する行為などを禁止する法律は何ですか？", options: ["サイバーセキュリティ基本法", "電子署名法", "不正アクセス禁止法", "マイナンバー法"], answer: 2, keywords: ["不正アクセス禁止法", "セキュリティホール"] },
+            { chapter: "第4章 ITビジネスで覚えておくべき関連法規", question: "企業などの従業員が職務上作成した著作物について、一定の要件を満たす場合に、その著作権が法人等に帰属するとされる考え方または制度を何と呼びますか？", options: ["職務発明", "業務委託", "職務著作", "権利譲渡"], answer: 2, keywords: ["職務著作", "著作権"] }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        const quizContentEl = document.getElementById('quiz-content');
+        const resultsContentEl = document.getElementById('results-content');
+        const explanationModalEl = document.getElementById('explanation-modal');
+        const explanationTermEl = document.getElementById('explanation-term');
+        const explanationContentEl = document.getElementById('explanation-content');
+        const explanationLoadingEl = document.getElementById('explanation-loading');
+
+        function formatQuestionText(text) { return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); }
+
+        function renderQuestion() {
+            if (currentQuestionIndex >= quizData.length) { showResults(); return; }
+            const questionData = quizData[currentQuestionIndex];
+            const formattedQuestion = formatQuestionText(questionData.question);
+            let optionsHtml = '<div class="options-grid">';
+            questionData.options.forEach((option, index) => {
+                let buttonClass = "option-button";
+                if (userAnswers[currentQuestionIndex] !== null) {
+                    if (index === questionData.answer) { buttonClass += " correct"; }
+                    else if (index === userAnswers[currentQuestionIndex]) { buttonClass += " incorrect"; }
+                }
+                optionsHtml += `<button class="${buttonClass}" onclick="selectAnswer(${index})" ${userAnswers[currentQuestionIndex] !== null ? 'disabled' : ''}>${index + 1}. ${option}</button>`;
+            });
+            optionsHtml += '</div>';
+            quizContentEl.innerHTML = `
+                <div class="question-header">
+                    <p class="progress-text mb-1">${questionData.chapter}</p>
+                    <h2 class="question-title">問題 ${currentQuestionIndex + 1} / ${quizData.length}</h2>
+                    <p class="question-text">${formattedQuestion}</p>
+                </div>
+                ${optionsHtml}
+                <div class="mt-4"><button class="gemini-button" onclick="showExplanation()">✨関連用語を解説</button></div>
+                <div class="navigation-buttons">
+                    <button id="prev-button" class="nav-button bg-gray-300 hover:bg-gray-400 text-gray-800" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>前の問題へ</button>
+                    <button id="next-button" class="nav-button primary" onclick="nextQuestion()" ${userAnswers[currentQuestionIndex] === null ? 'disabled' : ''}>${currentQuestionIndex === quizData.length - 1 ? '結果を見る' : '次の問題へ'}</button>
+                </div>`;
+        }
+
+        window.selectAnswer = function(selectedIndex) {
+            if (userAnswers[currentQuestionIndex] !== null) return;
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            if (selectedIndex === quizData[currentQuestionIndex].answer) { score++; }
+            renderQuestion();
+        }
+
+        window.nextQuestion = function() {
+            if (userAnswers[currentQuestionIndex] === null) return;
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+
+        window.prevQuestion = function() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsContentEl.classList.remove('hidden');
+            const percentage = ((score / quizData.length) * 100).toFixed(1);
+            resultsContentEl.innerHTML = `
+                <h2 class="results-title">テスト結果</h2>
+                <p class="results-score">正解数: ${score} / ${quizData.length} (${percentage}%)</p>
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">記録するユーザー名:</label>
+                    <input type="text" id="username" name="username" class="username-input" placeholder="名前を入力してください">
+                </div>
+                <button class="nav-button primary mr-2" onclick="submitResultsToGoogleSheet()">結果をスプレッドシートに記録</button>
+                <button class="nav-button bg-gray-500 hover:bg-gray-600 text-white" onclick="restartQuiz()">もう一度挑戦する</button>
+                <div id="submission-status"></div>`;
+        }
+
+        window.restartQuiz = function() {
+            currentQuestionIndex = 0; score = 0; userAnswers.fill(null);
+            resultsContentEl.classList.add('hidden');
+            quizContentEl.classList.remove('hidden');
+            explanationModalEl.classList.add('hidden');
+            if (document.getElementById('submission-status')) { document.getElementById('submission-status').textContent = ''; }
+            renderQuestion();
+        }
+
+        window.submitResultsToGoogleSheet = function() {
+            const usernameInput = document.getElementById('username');
+            const username = usernameInput ? usernameInput.value.trim() : '匿名ユーザー';
+            const submissionStatusEl = document.getElementById('submission-status');
+            if (!username) { submissionStatusEl.textContent = 'ユーザー名を入力してください。'; submissionStatusEl.className = 'text-red-600'; return; }
+            if (GOOGLE_SCRIPT_URL === '' || GOOGLE_SCRIPT_URL === 'ここにGoogle Apps ScriptのURLを貼り付け') {
+                submissionStatusEl.textContent = 'Google Apps ScriptのURLが設定されていません。管理者に連絡してください。';
+                submissionStatusEl.className = 'text-red-600'; console.error('Google Apps Script URL is not set.'); return;
+            }
+            submissionStatusEl.textContent = '結果を送信中...'; submissionStatusEl.className = 'text-blue-600';
+
+            // 隠しフォームを作成してデータを送信する
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = GOOGLE_SCRIPT_URL;
+
+            const dataToSubmit = {
+                timestamp: new Date().toLocaleString('ja-JP'),
+                username: username,
+                score: score,
+                totalQuestions: quizData.length,
+                percentage: ((score / quizData.length) * 100).toFixed(1) + '%',
+            };
+            
+            quizData.forEach((q, index) => {
+                dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null ? '-' : '不正解');
+            });
+
+            for (const key in dataToSubmit) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = dataToSubmit[key];
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+
+            submissionStatusEl.textContent = '結果を送信しました！スプレッドシートをご確認ください。';
+            submissionStatusEl.className = 'text-green-600';
+        }
+
+        window.showExplanation = async function() {
+            const currentQuestion = quizData[currentQuestionIndex];
+            const termToExplain = currentQuestion.keywords[0];
+            explanationTermEl.textContent = `「${termToExplain}」について`;
+            explanationContentEl.textContent = "";
+            explanationLoadingEl.classList.remove('hidden');
+            explanationModalEl.classList.remove('hidden');
+            const prompt = `IT用語「${termToExplain}」について、IT初学者にも分かりやすく簡単に解説してください。`;
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = "AIzaSyCnF6SD6mXECqHdiG1RkLiNP71dlBHHu8g";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) { throw new Error(`APIリクエストに失敗しました: ${response.status}`); }
+                const result = await response.json();
+                const text = result.candidates[0].content.parts[0].text;
+                explanationContentEl.textContent = text;
+            } catch (error) {
+                explanationContentEl.textContent = `エラーが発生しました: ${error.message}`;
+            } finally {
+                explanationLoadingEl.classList.add('hidden');
+            }
+        }
+
+        window.closeExplanationModal = function() {
+            explanationModalEl.classList.add('hidden');
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
