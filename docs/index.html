@@ -6,214 +6,82 @@
     <title>IT業界基礎知識 理解度テスト（1～4章・スプレッドシート記録機能付き）</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
-        }
-        .quiz-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .question-header {
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .question-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #111827;
-        }
-        .question-text {
-            font-size: 1.125rem;
-            margin-top: 0.5rem;
-            color: #374151;
-        }
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1rem;
-        }
-        @media (min-width: 640px) {
-            .options-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        .option-button {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            text-align: left;
-            font-size: 1rem;
-            background-color: white;
-            color: #1f2937;
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-        }
-        .option-button:hover {
-            background-color: #f9fafb;
-            border-color: #9ca3af;
-        }
-        .option-button.correct {
-            background-color: #d1fae5;
-            border-color: #10b981;
-            color: #047857;
-        }
-        .option-button.incorrect {
-            background-color: #fee2e2;
-            border-color: #ef4444;
-            color: #b91c1c;
-        }
-        .option-button:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .navigation-buttons {
-            margin-top: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .nav-button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .nav-button.primary {
-            background-color: #3b82f6;
-            color: white;
-        }
-        .nav-button.primary:hover {
-            background-color: #2563eb;
-        }
-        .nav-button:disabled {
-            background-color: #9ca3af;
-            cursor: not-allowed;
-        }
-        .results-container {
-            text-align: center;
-        }
-        .results-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1rem;
-        }
-        .results-score {
-            font-size: 1.5rem;
-            color: #374151;
-            margin-bottom: 1rem;
-        }
-        .username-input {
-            margin-bottom: 1rem;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            width: 100%;
-            max-width: 300px;
-        }
-        #submission-status {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            min-height: 1.25rem;
-        }
-        .gemini-button {
-            background-color: #fbbf24;
-            color: #78350f;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-weight: 500;
-            margin-top: 1rem;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .gemini-button:hover {
-            background-color: #f59e0b;
-        }
-        .modal {
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-        .modal-close-button {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #9ca3af;
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
-        .modal-close-button:hover {
-            color: #6b7280;
-        }
-        #explanation-content {
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: #f9fafb;
-            border-radius: 0.375rem;
-            border: 1px solid #e5e7eb;
-            min-height: 100px;
-            white-space: pre-wrap;
-        }
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 1rem auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; margin: 0; }
+        .app-layout { display: flex; max-width: 1100px; margin: 2rem auto; gap: 1.5rem; padding: 0 1rem; }
+        .sidebar { width: 220px; flex-shrink: 0; position: sticky; top: 2rem; align-self: flex-start; }
+        .sidebar-inner { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1rem; }
+        .sidebar-title { font-weight: 700; font-size: 0.875rem; color: #6b7280; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .q-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+        .q-btn { width: 100%; aspect-ratio: 1; border-radius: 0.375rem; border: 2px solid #e5e7eb; background: white; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+        .q-btn:hover { border-color: #9ca3af; }
+        .q-btn.current { border-color: #3b82f6; background-color: #eff6ff; color: #3b82f6; }
+        .q-btn.answered { background-color: #3b82f6; border-color: #3b82f6; color: white; }
+        .q-btn.skipped { background-color: #fbbf24; border-color: #fbbf24; color: #78350f; }
+        .sidebar-legend { margin-top: 1rem; font-size: 0.75rem; color: #6b7280; }
+        .sidebar-legend span { display: inline-flex; align-items: center; margin-right: 0.75rem; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; display: inline-block; }
+        .main-content { flex: 1; min-width: 0; }
+        .quiz-container { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 2rem; }
+        .question-header { border-bottom: 2px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .question-title { font-size: 1.5rem; font-weight: 600; color: #111827; }
+        .question-text { font-size: 1.125rem; margin-top: 0.5rem; color: #374151; }
+        .options-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option-button { display: block; width: 100%; padding: 1rem; border: 2px solid #d1d5db; border-radius: 0.5rem; text-align: left; font-size: 1rem; background-color: white; color: #1f2937; transition: all 0.15s; cursor: pointer; }
+        .option-button:hover { background-color: #f9fafb; border-color: #9ca3af; }
+        .option-button.selected { background-color: #eff6ff; border-color: #3b82f6; color: #1d4ed8; }
+        .navigation-buttons { margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .nav-button { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 500; transition: background-color 0.15s; cursor: pointer; border: none; font-size: 0.95rem; }
+        .nav-button.primary { background-color: #3b82f6; color: white; }
+        .nav-button.primary:hover { background-color: #2563eb; }
+        .nav-button.secondary { background-color: #e5e7eb; color: #374151; }
+        .nav-button.secondary:hover { background-color: #d1d5db; }
+        .nav-button.skip { background-color: #fef3c7; color: #92400e; }
+        .nav-button.skip:hover { background-color: #fde68a; }
+        .nav-button.submit { background-color: #10b981; color: white; }
+        .nav-button.submit:hover { background-color: #059669; }
+        .nav-button:disabled { background-color: #9ca3af; cursor: not-allowed; color: white; }
+        .results-container { text-align: center; }
+        .results-title { font-size: 1.875rem; font-weight: 700; color: #111827; margin-bottom: 1rem; }
+        .results-score { font-size: 1.5rem; color: #374151; margin-bottom: 1rem; }
+        .username-input { margin-bottom: 1rem; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; width: 100%; max-width: 300px; }
+        #submission-status { margin-top: 1rem; font-size: 0.875rem; min-height: 1.25rem; }
+        .gemini-button { background-color: #fbbf24; color: #78350f; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.15s; cursor: pointer; border: none; font-size: 1rem; }
+        .gemini-button:hover { background-color: #f59e0b; }
+        .confirm-overlay { position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+        .confirm-box { background: white; border-radius: 0.75rem; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .unanswered-warning { color: #dc2626; font-weight: 600; margin: 0.75rem 0; }
+        @media (max-width: 768px) {
+            .app-layout { flex-direction: column; }
+            .sidebar { width: 100%; position: static; }
+            .q-grid { grid-template-columns: repeat(10, 1fr); }
         }
     </style>
 </head>
 <body>
-    <div class="quiz-container">
-        <div id="quiz-content"></div>
-        <div id="results-content" class="results-container hidden"></div>
+    <div id="app-layout" class="app-layout">
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-inner">
+                <div class="sidebar-title">問題一覧</div>
+                <div id="q-grid" class="q-grid"></div>
+                <div class="sidebar-legend mt-3">
+                    <span><span class="legend-dot" style="background:#3b82f6"></span>回答済</span>
+                    <span><span class="legend-dot" style="background:#fbbf24"></span>スキップ</span>
+                    <span><span class="legend-dot" style="background:#fff;border:2px solid #e5e7eb"></span>未回答</span>
+                </div>
+                <div id="sidebar-progress" class="mt-3 text-sm text-gray-500"></div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <div class="quiz-container">
+                <div id="quiz-content"></div>
+                <div id="results-content" class="results-container hidden"></div>
+            </div>
+        </main>
     </div>
-    <div id="explanation-modal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close-button" onclick="closeExplanationModal()">&times;</button>
-            <h3 class="text-xl font-semibold mb-2">✨ 関連用語の解説</h3>
-            <div id="explanation-term" class="font-medium text-lg mb-2"></div>
-            <div id="explanation-loading" class="loading-spinner hidden"></div>
-            <div id="explanation-content">ここに解説が表示されます。</div>
-        </div>
-    </div>
+    <div id="confirm-modal" class="confirm-overlay hidden"></div>
+
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7EWD9o9eYNs7SZsXl17tJDKxXgGOqcLrMXSZ2r--ow6bsXUXylOfbh-jp-g2GzvqL3w/exec'; // 後の手順で発行する、ご自身のGoogle Apps ScriptのウェブアプリURLに置き換えてください
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7EWD9o9eYNs7SZsXl17tJDKxXgGOqcLrMXSZ2r--ow6bsXUXylOfbh-jp-g2GzvqL3w/exec';
 
         const quizData = [
             { chapter: "第1章 業界の全体像とネットビジネス企業", question: "世界的に影響力の強いアメリカのIT企業群を表す「GAFAM」に、講義では**含まれていない**企業はどれですか？", options: ["Google", "Apple", "Twitter (現 X)", "Microsoft"], answer: 2, keywords: ["GAFAM", "IT企業"], explanation: "【GAFAM（ガーファム）】\nGoogle、Apple、Facebook（現Meta）、Amazon、Microsoftの5社の頭文字を取った呼び方です。世界のIT業界を牽引する巨大企業群で、検索・スマートフォン・SNS・EC・OSなど、私たちの日常生活に深く関わるサービスを提供しています。Twitter（現X）はGAFAMには含まれません。" },
@@ -238,57 +106,79 @@
             { chapter: "第4章 ITビジネスで覚えておくべき関連法規", question: "企業などの従業員が職務上作成した著作物について、一定の要件を満たす場合に、その著作権が法人等に帰属するとされる考え方または制度を何と呼びますか？", options: ["職務発明", "業務委託", "職務著作", "権利譲渡"], answer: 2, keywords: ["職務著作", "著作権"], explanation: "【職務著作（法人著作）】\n会社の従業員が仕事として作成した著作物について、一定の条件を満たせば著作権が会社（法人）に帰属する制度です。\n\n条件：\n・法人の発意（指示）に基づいて作成されたもの\n・従業員が職務上作成したもの\n・法人名義で公表されるもの\n・契約や就業規則に別段の定めがないこと\n\n例えば、会社の指示で従業員が作成したプログラム、マニュアル、報告書などは、通常は会社が著作権を持ちます。\n\n【職務発明】は特許に関する制度で、著作権の「職務著作」とは別の概念です。" }
         ];
 
+        const SKIPPED = -1;
         let currentQuestionIndex = 0;
-        let score = 0;
         let userAnswers = new Array(quizData.length).fill(null);
+        let submitted = false;
 
         const quizContentEl = document.getElementById('quiz-content');
         const resultsContentEl = document.getElementById('results-content');
-        const explanationModalEl = document.getElementById('explanation-modal');
-        const explanationTermEl = document.getElementById('explanation-term');
-        const explanationContentEl = document.getElementById('explanation-content');
-        const explanationLoadingEl = document.getElementById('explanation-loading');
+        const confirmModalEl = document.getElementById('confirm-modal');
+        const sidebarEl = document.getElementById('sidebar');
 
         function formatQuestionText(text) { return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); }
 
+        function updateSidebar() {
+            const grid = document.getElementById('q-grid');
+            const answeredCount = userAnswers.filter(a => a !== null && a !== SKIPPED).length;
+            const skippedCount = userAnswers.filter(a => a === SKIPPED).length;
+            let html = '';
+            for (let i = 0; i < quizData.length; i++) {
+                let cls = 'q-btn';
+                if (i === currentQuestionIndex) cls += ' current';
+                if (userAnswers[i] !== null && userAnswers[i] !== SKIPPED) cls += ' answered';
+                if (userAnswers[i] === SKIPPED) cls += ' skipped';
+                html += `<button class="${cls}" onclick="goToQuestion(${i})">${i + 1}</button>`;
+            }
+            grid.innerHTML = html;
+            document.getElementById('sidebar-progress').innerHTML =
+                `回答済: ${answeredCount}/${quizData.length}` + (skippedCount > 0 ? `<br>スキップ: ${skippedCount}` : '');
+        }
+
         function renderQuestion() {
-            if (currentQuestionIndex >= quizData.length) { showResults(); return; }
             const questionData = quizData[currentQuestionIndex];
             const formattedQuestion = formatQuestionText(questionData.question);
-            let optionsHtml = '<div class="options-grid">';
+            const currentAnswer = userAnswers[currentQuestionIndex];
+            let optionsHtml = '<div class="options-list">';
             questionData.options.forEach((option, index) => {
                 let buttonClass = "option-button";
-                if (userAnswers[currentQuestionIndex] !== null) {
-                    if (index === questionData.answer) { buttonClass += " correct"; }
-                    else if (index === userAnswers[currentQuestionIndex]) { buttonClass += " incorrect"; }
-                }
-                optionsHtml += `<button class="${buttonClass}" onclick="selectAnswer(${index})" ${userAnswers[currentQuestionIndex] !== null ? 'disabled' : ''}>${index + 1}. ${option}</button>`;
+                if (currentAnswer === index) buttonClass += " selected";
+                optionsHtml += `<button class="${buttonClass}" onclick="selectAnswer(${index})">${index + 1}. ${option}</button>`;
             });
             optionsHtml += '</div>';
+
+            const isFirst = currentQuestionIndex === 0;
+            const isLast = currentQuestionIndex === quizData.length - 1;
+            const allAnswered = userAnswers.every(a => a !== null && a !== SKIPPED);
+
             quizContentEl.innerHTML = `
                 <div class="question-header">
-                    <p class="progress-text mb-1">${questionData.chapter}</p>
+                    <p class="text-sm text-gray-500 mb-1">${questionData.chapter}</p>
                     <h2 class="question-title">問題 ${currentQuestionIndex + 1} / ${quizData.length}</h2>
                     <p class="question-text">${formattedQuestion}</p>
                 </div>
                 ${optionsHtml}
                 <div class="navigation-buttons">
-                    <button id="prev-button" class="nav-button bg-gray-300 hover:bg-gray-400 text-gray-800" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>前の問題へ</button>
-                    <button id="next-button" class="nav-button primary" onclick="nextQuestion()" ${userAnswers[currentQuestionIndex] === null ? 'disabled' : ''}>${currentQuestionIndex === quizData.length - 1 ? '結果を見る' : '次の問題へ'}</button>
-                </div>`;
+                    <button class="nav-button secondary" onclick="prevQuestion()" ${isFirst ? 'disabled' : ''}>前の問題へ</button>
+                    <button class="nav-button skip" onclick="skipQuestion()">後で回答する</button>
+                    <button class="nav-button primary" onclick="nextQuestion()">${isLast ? '回答を確認する' : '次の問題へ'}</button>
+                </div>
+                ${allAnswered ? '<div class="text-center mt-4"><button class="nav-button submit text-lg px-8 py-3" onclick="showConfirmation()">回答を確認して提出する</button></div>' : ''}`;
+            updateSidebar();
         }
 
         window.selectAnswer = function(selectedIndex) {
-            if (userAnswers[currentQuestionIndex] !== null) return;
             userAnswers[currentQuestionIndex] = selectedIndex;
-            if (selectedIndex === quizData[currentQuestionIndex].answer) { score++; }
             renderQuestion();
         }
 
         window.nextQuestion = function() {
-            if (userAnswers[currentQuestionIndex] === null) return;
-            currentQuestionIndex++;
-            renderQuestion();
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                showConfirmation();
+            }
         }
 
         window.prevQuestion = function() {
@@ -298,8 +188,90 @@
             }
         }
 
-        function showResults() {
+        window.skipQuestion = function() {
+            if (userAnswers[currentQuestionIndex] === null) {
+                userAnswers[currentQuestionIndex] = SKIPPED;
+            }
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+            } else {
+                // Find first unanswered/skipped
+                const next = userAnswers.findIndex(a => a === null || a === SKIPPED);
+                if (next !== -1) currentQuestionIndex = next;
+            }
+            renderQuestion();
+        }
+
+        window.goToQuestion = function(index) {
+            currentQuestionIndex = index;
+            renderQuestion();
+        }
+
+        window.showConfirmation = function() {
+            const unanswered = [];
+            const skipped = [];
+            userAnswers.forEach((a, i) => {
+                if (a === null) unanswered.push(i + 1);
+                else if (a === SKIPPED) skipped.push(i + 1);
+            });
+
+            let warningHtml = '';
+            if (unanswered.length > 0) {
+                warningHtml += `<p class="unanswered-warning">未回答の問題があります: ${unanswered.join(', ')}</p>`;
+            }
+            if (skipped.length > 0) {
+                warningHtml += `<p class="unanswered-warning" style="color:#92400e">スキップした問題があります: ${skipped.join(', ')}</p>`;
+            }
+
+            let summaryHtml = '<div class="text-left mt-4 max-h-60 overflow-y-auto"><table class="w-full text-sm"><thead><tr class="border-b"><th class="py-1 text-left">問題</th><th class="py-1 text-left">状態</th></tr></thead><tbody>';
+            userAnswers.forEach((a, i) => {
+                let status, color;
+                if (a === null) { status = '未回答'; color = 'text-red-600'; }
+                else if (a === SKIPPED) { status = 'スキップ'; color = 'text-yellow-600'; }
+                else { status = '回答済（選択肢' + (a + 1) + '）'; color = 'text-blue-600'; }
+                summaryHtml += `<tr class="border-b"><td class="py-1">問${i + 1}</td><td class="py-1 ${color} font-medium">${status}</td></tr>`;
+            });
+            summaryHtml += '</tbody></table></div>';
+
+            confirmModalEl.innerHTML = `
+                <div class="confirm-box">
+                    <h3 class="text-xl font-bold mb-3">回答の確認</h3>
+                    ${warningHtml}
+                    ${summaryHtml}
+                    <div class="flex gap-3 mt-4 justify-end flex-wrap">
+                        <button class="nav-button secondary" onclick="closeConfirmation()">問題に戻る</button>
+                        ${(unanswered.length > 0 || skipped.length > 0) ?
+                            `<button class="nav-button skip" onclick="goToFirstIncomplete()">未回答の問題へ</button>` : ''}
+                        <button class="nav-button submit" onclick="submitQuiz()">提出する</button>
+                    </div>
+                </div>`;
+            confirmModalEl.classList.remove('hidden');
+        }
+
+        window.closeConfirmation = function() {
+            confirmModalEl.classList.add('hidden');
+        }
+
+        window.goToFirstIncomplete = function() {
+            confirmModalEl.classList.add('hidden');
+            const next = userAnswers.findIndex(a => a === null || a === SKIPPED);
+            if (next !== -1) {
+                currentQuestionIndex = next;
+                renderQuestion();
+            }
+        }
+
+        window.submitQuiz = function() {
+            confirmModalEl.classList.add('hidden');
+            submitted = true;
+            let score = 0;
+            userAnswers.forEach((a, i) => { if (a === quizData[i].answer) score++; });
+            showResults(score);
+        }
+
+        function showResults(score) {
             quizContentEl.classList.add('hidden');
+            sidebarEl.classList.add('hidden');
             resultsContentEl.classList.remove('hidden');
             const percentage = ((score / quizData.length) * 100).toFixed(1);
             resultsContentEl.innerHTML = `
@@ -309,8 +281,8 @@
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-1">記録するユーザー名:</label>
                     <input type="text" id="username" name="username" class="username-input" placeholder="名前を入力してください">
                 </div>
-                <button class="nav-button primary mr-2" onclick="submitResultsToGoogleSheet()">結果をスプレッドシートに記録</button>
-                <button class="nav-button bg-gray-500 hover:bg-gray-600 text-white" onclick="restartQuiz()">もう一度挑戦する</button>
+                <button class="nav-button submit mr-2" onclick="submitResultsToGoogleSheet()">結果をスプレッドシートに記録</button>
+                <button class="nav-button secondary" onclick="restartQuiz()">もう一度挑戦する</button>
                 <div id="submission-status"></div>
                 <div id="review-button-area" class="hidden mt-4">
                     <button class="gemini-button text-lg px-6 py-3" onclick="showReview()">解説を見る</button>
@@ -318,26 +290,29 @@
         }
 
         window.restartQuiz = function() {
-            currentQuestionIndex = 0; score = 0; userAnswers.fill(null);
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            submitted = false;
             resultsContentEl.classList.add('hidden');
             quizContentEl.classList.remove('hidden');
-            explanationModalEl.classList.add('hidden');
-            if (document.getElementById('submission-status')) { document.getElementById('submission-status').textContent = ''; }
+            sidebarEl.classList.remove('hidden');
             renderQuestion();
         }
 
         window.submitResultsToGoogleSheet = function() {
             const usernameInput = document.getElementById('username');
-            const username = usernameInput ? usernameInput.value.trim() : '匿名ユーザー';
+            const username = usernameInput ? usernameInput.value.trim() : '';
             const submissionStatusEl = document.getElementById('submission-status');
             if (!username) { submissionStatusEl.textContent = 'ユーザー名を入力してください。'; submissionStatusEl.className = 'text-red-600'; return; }
             if (GOOGLE_SCRIPT_URL === '' || GOOGLE_SCRIPT_URL === 'ここにGoogle Apps ScriptのURLを貼り付け') {
                 submissionStatusEl.textContent = 'Google Apps ScriptのURLが設定されていません。管理者に連絡してください。';
-                submissionStatusEl.className = 'text-red-600'; console.error('Google Apps Script URL is not set.'); return;
+                submissionStatusEl.className = 'text-red-600'; return;
             }
             submissionStatusEl.textContent = '結果を送信中...'; submissionStatusEl.className = 'text-blue-600';
 
-            // 隠しフォームを作成してデータを送信する
+            let score = 0;
+            userAnswers.forEach((a, i) => { if (a === quizData[i].answer) score++; });
+
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = GOOGLE_SCRIPT_URL;
@@ -349,11 +324,9 @@
                 totalQuestions: quizData.length,
                 percentage: ((score / quizData.length) * 100).toFixed(1) + '%',
             };
-            
             quizData.forEach((q, index) => {
-                dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null ? '-' : '不正解');
+                dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null || userAnswers[index] === SKIPPED ? '-' : '不正解');
             });
-
             for (const key in dataToSubmit) {
                 const input = document.createElement('input');
                 input.type = 'hidden';
@@ -361,7 +334,6 @@
                 input.value = dataToSubmit[key];
                 form.appendChild(input);
             }
-
             document.body.appendChild(form);
             form.submit();
 
@@ -371,31 +343,43 @@
         }
 
         window.showReview = function() {
-            resultsContentEl.classList.add('hidden');
-            quizContentEl.classList.remove('hidden');
-            let reviewHtml = '<h2 class="results-title mb-6">全問解説</h2>';
+            resultsContentEl.innerHTML = '';
+            resultsContentEl.classList.remove('hidden');
+            let score = 0;
+            userAnswers.forEach((a, i) => { if (a === quizData[i].answer) score++; });
+            const percentage = ((score / quizData.length) * 100).toFixed(1);
+
+            let reviewHtml = `<h2 class="results-title mb-2">全問解説</h2><p class="results-score mb-6">正解数: ${score} / ${quizData.length} (${percentage}%)</p>`;
             quizData.forEach((q, index) => {
-                const isCorrect = userAnswers[index] === q.answer;
-                const userAnswer = userAnswers[index] !== null ? q.options[userAnswers[index]] : '未回答';
+                const userAns = userAnswers[index];
+                const isCorrect = userAns === q.answer;
+                const isSkipped = userAns === null || userAns === SKIPPED;
+                const userAnswer = isSkipped ? '未回答' : q.options[userAns];
                 const correctAnswer = q.options[q.answer];
+                const borderColor = isCorrect ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50';
+                const icon = isCorrect ? '<span class="text-green-600 font-bold text-lg">○</span>' : '<span class="text-red-600 font-bold text-lg">×</span>';
+
                 reviewHtml += `
-                    <div class="mb-6 p-4 border rounded-lg ${isCorrect ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'}">
-                        <p class="text-sm text-gray-500 mb-1">${q.chapter}</p>
-                        <h3 class="font-semibold mb-2">問題 ${index + 1}：${formatQuestionText(q.question)}</h3>
-                        <p class="mb-1">あなたの回答：<span class="${isCorrect ? 'text-green-700 font-bold' : 'text-red-700 font-bold'}">${userAnswer} ${isCorrect ? '○' : '×'}</span></p>
-                        ${!isCorrect ? `<p class="mb-2">正解：<span class="text-green-700 font-bold">${correctAnswer}</span></p>` : ''}
-                        <details class="mt-2">
-                            <summary class="cursor-pointer text-blue-600 hover:text-blue-800 font-medium">解説を見る</summary>
+                    <div class="mb-4 p-4 border-2 rounded-lg ${borderColor} text-left">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-xs text-gray-500">${q.chapter}</p>
+                                <h3 class="font-semibold mt-1">問題 ${index + 1}：${formatQuestionText(q.question)}</h3>
+                            </div>
+                            ${icon}
+                        </div>
+                        <div class="mt-2 text-sm">
+                            <p>あなたの回答：<span class="${isCorrect ? 'text-green-700' : 'text-red-700'} font-bold">${userAnswer}</span></p>
+                            ${!isCorrect ? `<p>正解：<span class="text-green-700 font-bold">${correctAnswer}</span></p>` : ''}
+                        </div>
+                        <details class="mt-3">
+                            <summary class="cursor-pointer text-blue-600 hover:text-blue-800 font-medium text-sm">解説を見る</summary>
                             <div class="mt-2 p-3 bg-white rounded border border-gray-200 whitespace-pre-wrap text-sm">${q.explanation}</div>
                         </details>
                     </div>`;
             });
-            reviewHtml += `<div class="text-center mt-6"><button class="nav-button bg-gray-500 hover:bg-gray-600 text-white" onclick="restartQuiz()">もう一度挑戦する</button></div>`;
-            quizContentEl.innerHTML = reviewHtml;
-        }
-
-        window.closeExplanationModal = function() {
-            explanationModalEl.classList.add('hidden');
+            reviewHtml += `<div class="text-center mt-6"><button class="nav-button secondary" onclick="restartQuiz()">もう一度挑戦する</button></div>`;
+            resultsContentEl.innerHTML = reviewHtml;
         }
 
         renderQuestion();
