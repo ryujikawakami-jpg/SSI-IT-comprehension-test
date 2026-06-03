@@ -326,7 +326,7 @@
                 dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null ? '-' : '不正解');
             });
             const params = new URLSearchParams(dataToSubmit);   
-                            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: params })
+                            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: params, mode: 'no-cors' })
                                 .then(() => {
             submissionStatusEl.textContent = '結果を送信しました！スプレッドシートをご確認ください。';
             submissionStatusEl.className = 'text-green-600';
