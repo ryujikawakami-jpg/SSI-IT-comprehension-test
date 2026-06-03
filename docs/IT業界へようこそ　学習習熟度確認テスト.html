@@ -315,33 +315,17 @@
             let score = 0;
             userAnswers.forEach((a, i) => { if (a === quizData[i].answer) score++; });
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = GOOGLE_SCRIPT_URL;
-
-            const dataToSubmit = {
-                timestamp: new Date().toLocaleString('ja-JP'),
-                username: username,
-                score: score,
-                totalQuestions: quizData.length,
-                percentage: ((score / quizData.length) * 100).toFixed(1) + '%',
-            };
-            quizData.forEach((q, index) => {
-                dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null ? '-' : '不正解');
-            });
-            for (const key in dataToSubmit) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = dataToSubmit[key];
-                form.appendChild(input);
-            }
-            document.body.appendChild(form);
-            form.submit();
-
+            const params = new URLSearchParams(dataToSubmit);   
+                            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: params })
+                                .then(() => {
             submissionStatusEl.textContent = '結果を送信しました！スプレッドシートをご確認ください。';
             submissionStatusEl.className = 'text-green-600';
             document.getElementById('review-button-area').classList.remove('hidden');
+                                })
+                                .catch(() => {
+                                                            submissionStatusEl.textContent = '送信に失敗しました。再度お試しください。';
+                                                            submissionStatusEl.className = 'text-red-600';
+                                });
         }
 
         window.showReview = function() {
