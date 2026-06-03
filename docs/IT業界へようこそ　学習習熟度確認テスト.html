@@ -313,6 +313,7 @@
                 submissionStatusEl.textContent = 'Google Apps ScriptのURLが設定されていません。管理者に連絡してください。';
                 submissionStatusEl.className = 'text-red-600'; return;
             }
+            submissionStatusEl.textContent = '送信中...'; submissionStatusEl.className = 'text-blue-600';
 
             let score = 0;
             userAnswers.forEach((a, i) => { if (a === quizData[i].answer) score++; });
@@ -327,30 +328,15 @@
             quizData.forEach((q, index) => {
                 dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null ? '-' : '不正解');
             });
-            const params = new URLSearchParams(dataToSubmit);
 
-            // 非表示iframeでGASに送信（リダイレクトはiframe内で完結し、親ページは遺移しない）
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.name = 'gas-sender';
-            document.body.appendChild(iframe);
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = GOOGLE_SCRIPT_URL;
-            form.target = 'gas-sender';
+            const formData = new FormData();
             for (const [key, value] of Object.entries(dataToSubmit)) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                form.appendChild(input);
+                formData.append(key, value);
             }
-            document.body.appendChild(form);
-            form.submit();
+            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: formData })
+                .then(() => { submissionStatusEl.textContent = '送信完了！スプレッドシートをご確認ください。'; submissionStatusEl.className = 'text-green-600'; })
+                .catch(() => { submissionStatusEl.textContent = '送信エラー。スプレッドシートを手動でご確認ください。'; submissionStatusEl.className = 'text-orange-600'; });
 
-            submissionStatusEl.textContent = '結果を送信しました！スプレッドシートをご確認ください。';
-            submissionStatusEl.className = 'text-green-600';
             document.getElementById('review-button-area').classList.remove('hidden');
         }
 
