@@ -315,6 +315,16 @@
             let score = 0;
             userAnswers.forEach((a, i) => { if (a === quizData[i].answer) score++; });
 
+            const dataToSubmit = {
+                timestamp: new Date().toLocaleString('ja-JP'),
+                username: username,
+                score: score,
+                totalQuestions: quizData.length,
+                percentage: ((score / quizData.length) * 100).toFixed(1) + '%',
+            };
+            quizData.forEach((q, index) => {
+                dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null ? '-' : '不正解');
+            });
             const params = new URLSearchParams(dataToSubmit);   
                             fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: params })
                                 .then(() => {
