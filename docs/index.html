@@ -315,9 +315,22 @@
             let score = 0;
             userAnswers.forEach((a, i) => { if (a === quizData[i].answer) score++; });
 
-            const form = document.createElement('form');
+                   const existingIframe = document.getElementById('_gas_submit_iframe');
+            if (existingIframe) existingIframe.remove();
+            const existingForm = document.getElementById('_gas_submit_form');
+            if (existingForm) existingForm.remove();
+
+            const iframe = document.createElement('iframe');
+            iframe.id = '_gas_submit_iframe';
+            iframe.name = '_gas_submit_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+     const form = document.createElement('form');
             form.method = 'POST';
             form.action = GOOGLE_SCRIPT_URL;
+            form.id = '_gas_submit_form';
+            form.target = '_gas_submit_iframe';
 
             const dataToSubmit = {
                 timestamp: new Date().toLocaleString('ja-JP'),
