@@ -282,7 +282,7 @@
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-1">記録するユーザー名:</label>
                     <input type="text" id="username" name="username" class="username-input" placeholder="名前を入力してください">
                 </div>
-                <button class="nav-button submit mr-2" onclick="submitResultsToGoogleSheet()">結果をスプレッドシートに記録</button>
+                <button type="button" class="nav-button submit mr-2" onclick="submitResultsToGoogleSheet(event)">結果をスプレッドシートに記録</button>
                 <button class="nav-button secondary" onclick="restartQuiz()">もう一度挑戦する</button>
                 <div id="submission-status"></div>
                 <div id="review-button-area" class="hidden mt-4">
@@ -301,7 +301,8 @@
             renderQuestion();
         }
 
-        window.submitResultsToGoogleSheet = function() {
+        window.submitResultsToGoogleSheet = function(evt) {
+            if (evt) { evt.preventDefault(); evt.stopPropagation(); }
             const usernameInput = document.getElementById('username');
             const username = usernameInput ? usernameInput.value.trim() : '';
             const submissionStatusEl = document.getElementById('submission-status');
