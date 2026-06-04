@@ -333,20 +333,42 @@
                 dataToSubmit[`is_correct_${index + 1}`] = userAnswers[index] === q.answer ? '正解' : (userAnswers[index] === null ? '-' : '不正解');
             });
 
-            // sendBeaconでバックグラウンド送信（レスポンス無視、ページ遷移なし）
+            // hidden iframeをターゲットにしたフォーム送信（メインウィンドウが遷移しない）
             try {
-                const formData = new FormData();
+                const existingIframe = document.getElementById('_gas_submit_iframe');
+                if (existingIframe) existingIframe.remove();
+                const existingForm = document.getElementById('_gas_submit_form');
+                if (existingForm) existingForm.remove();
+
+                const iframe = document.createElement('iframe');
+                iframe.id = '_gas_submit_iframe';
+                iframe.name = '_gas_submit_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+
+                const form = document.createElement('form');
+                form.id = '_gas_submit_form';
+                form.method = 'POST';
+                form.action = GOOGLE_SCRIPT_URL;
+                form.target = '_gas_submit_iframe';
+                form.style.display = 'none';
+
                 for (const [key, value] of Object.entries(dataToSubmit)) {
-                    formData.append(key, value);
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    form.appendChild(input);
                 }
-                const sent = navigator.sendBeacon(GOOGLE_SCRIPT_URL, formData);
-                if (sent) {
-                    submissionStatusEl.textContent = '送信完了！スプレッドシートをご確認ください。';
-                    submissionStatusEl.className = 'text-green-600';
-                } else {
-                    submissionStatusEl.textContent = '送信できませんでした。手動でご確認ください。';
-                    submissionStatusEl.className = 'text-orange-600';
-                }
+
+                document.body.appendChild(form);
+                form.submit();
+
+                submissionStatusEl.textContent = '送信完了！スプレッドシートをご確認ください。';
+                submissionStatusEl.className = 'text-green-600';
+            } catch(e) {
+                submissionStatusEl.textContent = '送信エラー。スプレッドシートを手動でご確認ください。';
+                submissionStatusEl.className = 'text-orange-600';
             } catch(e) {
                 submissionStatusEl.textContent = '送信エラー。スプレッドシートを手動でご確認ください。';
                 submissionStatusEl.className = 'text-orange-600';
